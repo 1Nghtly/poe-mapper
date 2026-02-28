@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #1a1a1a;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #333;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .close-btn {
+      background: #ff4444;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .close-btn:hover {
+      background: #cc0000;
+    }
+
+    .section {
+      margin-bottom: 25px;
+      padding: 15px;
+      background: #252525;
+      border-radius: 8px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #4CAF50;
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-size: 14px;
+      flex: 1;
+    }
+
+    input[type="color"] {
+      width: 60px;
+      height: 35px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    input[type="range"] {
+      width: 150px;
+    }
+
+    .scale-value {
+      display: inline-block;
+      width: 40px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 14px;
+      flex: 1;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    button.secondary {
+      background: #666;
+    }
+
+    button.secondary:hover {
+      background: #555;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      margin-right: 10px;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    /* Update section styles */
+    .update-info {
+      padding: 10px;
+      background: #333;
+      border-radius: 4px;
+      margin: 10px 0;
+      font-size: 13px;
+    }
+
+    .update-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #666;
+    }
+
+    .status-indicator.checking {
+      background: #FFA500;
+      animation: pulse 1.5s infinite;
+    }
+
+    .status-indicator.up-to-date {
+      background: #4CAF50;
+    }
+
+    .status-indicator.update-available {
+      background: #2196F3;
+    }
+
+    .status-indicator.error {
+      background: #f44336;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background: #444;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 10px 0;
+      display: none;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #4CAF50;
+      width: 0%;
+      transition: width 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .update-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .update-actions button {
+      flex: 1;
+    }
+
+    button.update-btn {
+      background: #2196F3;
+    }
+
+    button.update-btn:hover {
+      background: #0b7dda;
+    }
+
+    button:disabled {
+      background: #555;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h2>Settings</h2>
+  </div>
+
+  <!-- Updates Section -->
+  <div class="section">
+    <div class="section-title">Updates</div>
+    
+    <div class="update-info">
+      <div class="update-status">
+        <div class="status-indicator" id="updateStatusIndicator"></div>
+        <span id="updateStatusText">Current Version: <span id="currentVersion">Loading...</span></span>
+      </div>
+      
+      <div id="updateDetails" style="display: none;">
+        <div style="margin: 10px 0;">
+          <strong>New Version Available:</strong> <span id="newVersion"></span><br>
+          <span id="releaseNotes"></span>
+        </div>
+      </div>
+
+      <div class="progress-bar" id="downloadProgress">
+        <div class="progress-fill" id="progressFill">0%</div>
+      </div>
+
+      <div class="update-actions">
+        <button id="checkUpdateBtn" class="update-btn">Check for Updates</button>
+        <button id="downloadUpdateBtn" class="update-btn" style="display: none;">Download Update</button>
+        <button id="installUpdateBtn" class="update-btn" style="display: none;">Install & Restart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Colors Section -->
+  <div class="section">
+    <div class="section-title">Colors</div>
+    
+    <div class="setting-row">
+      <label for="timerColor">Timer Color:</label>
+      <input type="color" id="timerColor" value="#ffffff">
+    </div>
+
+    <div class="setting-row">
+      <label for="mapColor">Map Info Color:</label>
+      <input type="color" id="mapColor" value="#ffffff">
+    </div>
+  </div>
+
+  <!-- Window Section -->
+  <div class="section">
+    <div class="section-title">Window</div>
+    
+    <div class="setting-row">
+      <label for="scaleSlider">Scale:</label>
+      <input type="range" id="scaleSlider" min="0.5" max="2.0" step="0.1" value="1.0">
+      <span class="scale-value" id="scaleValue">1.0x</span>
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="dragCheckbox">
+      <label for="dragCheckbox">Enable Window Dragging</label>
+    </div>
+  </div>
+
+  <div class="button-group">
+    <button id="saveBtn">Save Settings</button>
+    <button id="resetBtn" class="secondary">Reset to Defaults</button>
+  </div>
+
+  <div class="button-group" style="margin-top: 10px;">
+    <button class="close-btn" id="closeBtn">Close</button>
+  </div>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+
+    let isDraggable = false;
+    let updateInfo = null;
+
+    // Load current version on startup
+    (async () => {
+      const version = await ipcRenderer.invoke('get-app-version');
+      document.getElementById('currentVersion').textContent = version;
+    })();
+
+    // Load settings
+    ipcRenderer.invoke('load-settings').then(settings => {
+      document.getElementById('timerColor').value = settings.timerColor;
+      document.getElementById('mapColor').value = settings.mapColor;
+      document.getElementById('scaleSlider').value = settings.scale;
+      document.getElementById('scaleValue').textContent = settings.scale + 'x';
+    });
+
+    // Scale slider
+    document.getElementById('scaleSlider').addEventListener('input', (e) => {
+      document.getElementById('scaleValue').textContent = e.target.value + 'x';
+    });
+
+    // Drag checkbox
+    document.getElementById('dragCheckbox').addEventListener('change', (e) => {
+      isDraggable = e.target.checked;
+      ipcRenderer.send('toggle-window-movable', isDraggable);
+    });
+
+    // Save button
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      const settings = {
+        timerColor: document.getElementById('timerColor').value,
+        mapColor: document.getElementById('mapColor').value,
+        scale: parseFloat(document.getElementById('scaleSlider').value)
+      };
+      ipcRenderer.send('save-settings', settings);
+      alert('Settings saved!');
+    });
+
+    // Reset button
+    document.getElementById('resetBtn').addEventListener('click', async () => {
+      const defaults = await ipcRenderer.invoke('reset-defaults');
+      document.getElementById('timerColor').value = defaults.timerColor;
+      document.getElementById('mapColor').value = defaults.mapColor;
+      document.getElementById('scaleSlider').value = defaults.scale;
+      document.getElementById('scaleValue').textContent = defaults.scale + 'x';
+      alert('Settings reset to defaults!');
+    });
+
+    // Close button
+    document.getElementById('closeBtn').addEventListener('click', () => {
+      ipcRenderer.send('close-settings-window');
+    });
+
+    // === UPDATE FUNCTIONALITY ===
+
+    function setStatus(status, text) {
+      const indicator = document.getElementById('updateStatusIndicator');
+      const statusText = document.getElementById('updateStatusText');
+      
+      indicator.className = 'status-indicator ' + status;
+      statusText.innerHTML = text;
+    }
+
+    // Check for updates button
+    document.getElementById('checkUpdateBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('checkUpdateBtn');
+      btn.disabled = true;
+      setStatus('checking', 'Checking for updates...');
+      
+      try {
+        const result = await ipcRenderer.invoke('check-for-updates');
+        
+        if (result.error) {
+          setStatus('error', 'Error: ' + result.error);
+        }
+        // Result will be sent via events below
+      } catch (error) {
+        setStatus('error', 'Failed to check for updates');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // Download update button
+    document.getElementById('downloadUpdateBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('downloadUpdateBtn');
+      btn.disabled = true;
+      btn.textContent = 'Downloading...';
+      
+      await ipcRenderer.invoke('download-update');
+    });
+
+    // Install update button
+    document.getElementById('installUpdateBtn').addEventListener('click', () => {
+      ipcRenderer.invoke('install-update');
+    });
+
+    // Listen for update events
+    ipcRenderer.on('update-available', (event, info) => {
+      updateInfo = info;
+      setStatus('update-available', `Current Version: ${document.getElementById('currentVersion').textContent}`);
+      
+      document.getElementById('updateDetails').style.display = 'block';
+      document.getElementById('newVersion').textContent = info.version;
+      document.getElementById('releaseNotes').textContent = info.releaseNotes || '';
+      
+      document.getElementById('checkUpdateBtn').style.display = 'none';
+      document.getElementById('downloadUpdateBtn').style.display = 'block';
+    });
+
+    ipcRenderer.on('update-not-available', () => {
+      setStatus('up-to-date', `✓ Up to date (Version ${document.getElementById('currentVersion').textContent})`);
+      document.getElementById('updateDetails').style.display = 'none';
+    });
+
+    ipcRenderer.on('download-progress', (event, progress) => {
+      const progressBar = document.getElementById('downloadProgress');
+      const progressFill = document.getElementById('progressFill');
+      
+      progressBar.style.display = 'block';
+      progressFill.style.width = progress.percent + '%';
+      progressFill.textContent = Math.round(progress.percent) + '%';
+      
+      setStatus('checking', 'Downloading update: ' + Math.round(progress.percent) + '%');
+    });
+
+    ipcRenderer.on('update-downloaded', (event, info) => {
+      setStatus('up-to-date', '✓ Update downloaded and ready to install');
+      
+      document.getElementById('downloadProgress').style.display = 'none';
+      document.getElementById('downloadUpdateBtn').style.display = 'none';
+      document.getElementById('installUpdateBtn').style.display = 'block';
+    });
+
+    ipcRenderer.on('update-error', (event, error) => {
+      setStatus('error', 'Update error: ' + error.message);
+      document.getElementById('checkUpdateBtn').disabled = false;
+    });
+  </script>
+</body>
+</html>
