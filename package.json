@@ -9,15 +9,15 @@
     "type": "git",
     "url": "https://github.com/1Nghtly/poe-mapper.git"
   },
-  "scripts": {
-    "start": "electron .",
-    "package-win": "electron-packager . Mapper --platform=win32 --arch=x64 --icon=assets/JungleValley.ico --out=dist --overwrite",
-    "build": "electron-builder",
-    "publish": "electron-builder --publish always"
-  },
+"scripts": {
+  "start": "electron .",
+  "package-win": "electron-packager . Mapper --platform=win32 --arch=x64 --icon=assets/JungleValley.ico --out=dist --overwrite",
+  "build": "electron-builder",
+  "publish": "electron-builder --publish always"
+},
   "build": {
     "appId": "com.1nghtly.poe-mapper",
-    "productName": "PoE Mapper Timer",
+    "productName": "PoE-Mapper-Timer",
     "win": {
       "target": [
         {
@@ -47,12 +47,12 @@
     "@types/electron": "^1.6.12",
     "electron": "^32.0.1",
     "electron-packager": "^17.1.2",
-    "electron-builder": "^24.9.1",
-    "electron-updater": "^6.1.7"
+    "electron-builder": "^24.9.1"
   },
   "dependencies": {
     "chokidar": "^3.6.0",
     "electron-store": "^10.0.0",
+    "electron-updater": "^6.1.7",
     "winreg": "^1.0.0"
   }
 }

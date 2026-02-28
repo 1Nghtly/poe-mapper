@@ -6,8 +6,8 @@ const MapTracker = require('./maptracker');
 const LabTracker = require('./labtracker');
 const ActTracker = require('./acttracker');
 const StarfallTracker = require('./starfalltracker');
-const updateManager = require('./updatemanager'); 
-
+const UpdateManager = require('./updatemanager'); 
+ 
 // Sets the app's name, which determines the folder name in %APPDATA%
 app.setName('Mapper');
 
@@ -419,7 +419,7 @@ async function createWindow() {
   mapTracker.starfallTracker = starfallTracker;
 
   // Initialize update manager
-  // updateManager = new UpdateManager(mainWindow); // Disabled for now
+  updateManager = new UpdateManager(mainWindow);
 
   const timerColor = store.get('timerColor', defaultSettings.timerColor);
   const mapColor = store.get('mapColor', defaultSettings.mapColor);
